@@ -4,8 +4,8 @@ public class Piece {
 	protected Position position;
 	private Board board;
 
-	public Piece(Board tabuleiro) {
-		this.board = tabuleiro;
+	public Piece(Board board) {
+		this.board = board;
 		position = null;
 	}
 
