@@ -2,12 +2,15 @@ package boardgame;
 
 public class Board {
 	private int rows;
-	private int collums;
+	private int collumns;
 	private Piece[][] pieces;
 
 	public Board(int rows, int collums) {
+		if (rows < 1 || collums < 1) {
+			throw new BoardException("Erro ao criar o tabuleiro, é necessário que tenha pelo menos 1 linha e 1 coluna");
+		}
 		this.rows = rows;
-		this.collums = collums;
+		this.collumns = collums;
 		pieces = new Piece[rows][collums];
 	}
 
@@ -15,28 +18,44 @@ public class Board {
 		return rows;
 	}
 
-	public void setRows(int rows) {
-		this.rows = rows;
-	}
-
-	public int getCollums() {
-		return collums;
-	}
-
-	public void setCollums(int collums) {
-		this.collums = collums;
+	public int getCollumns() {
+		return collumns;
 	}
 
 	public Piece piece(int row, int collum) {
+		if (!positionExists(row, collum)) {
+			throw new BoardException("Posição não existe no tabuleiro");
+		}
 		return pieces[row][collum];
 	}
 
 	public Piece piece(Position position) {
-		return pieces[position.getRow()][position.getCollum()];
+		if (!positionExists(position)) {
+			throw new BoardException("Posição não existe no tabuleiro");
+		}
+		return pieces[position.getRow()][position.getCollumn()];
 	}
-	
-	public void placePiece (Piece piece, Position position) {
-		pieces[position.getRow()][position.getCollum()] = piece;
+
+	public void placePiece(Piece piece, Position position) {
+		if (thereIsAPiece(position)) {
+			throw new BoardException("Já existe uma peça na posição " + position);
+		}
+		pieces[position.getRow()][position.getCollumn()] = piece;
 		piece.position = position;
+	}
+
+	public boolean positionExists(int row, int collumn) {
+		return row >= 0 && row < rows && collumn >= 0 && collumn < collumns;
+	}
+
+	public boolean positionExists(Position position) {
+		return positionExists(position.getRow(), position.getCollumn());
+	}
+
+	public boolean thereIsAPiece(Position position) {
+		if (!positionExists(position)) {
+			throw new BoardException("Posição não existe no tabuleiro");
+		}
+		return piece(position) != null;
 	}
 }
